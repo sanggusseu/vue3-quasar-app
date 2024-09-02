@@ -60,7 +60,15 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      extendViteConf(viteConf) {
+        viteConf.server = {
+          ...viteConf.server,
+          hmr: {
+            ...viteConf.server?.hmr,
+            overlay: false,
+          },
+        };
+      },
       // viteVuePluginOptions: {},
 
       vitePlugins: [
