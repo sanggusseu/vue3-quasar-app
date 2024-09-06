@@ -1,8 +1,8 @@
 {
-  "name": "vue3-quasar-app",
+  "name": "vue3-firebase-app",
   "version": "0.0.1",
   "description": "Vue3 Quasar Firebase TypeScript Lecture",
-  "productName": "Vue3 Quasar App",
+  "productName": "Vue3 Firebase App",
   "author": "sanggusseu <sanggusseu@gmail.com>",
   "private": true,
   "scripts": {
