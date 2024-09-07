@@ -1,12 +1,15 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { useLocalStorage, StorageSerializers } from '@vueuse/core';
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref(null);
+  // const user = ref(null);
+  const user = useLocalStorage('auth/user', null, {
+    serializer: StorageSerializers.object,
+  });
   const isAuthenticated = computed(() => !!user.value);
 
   const setUser = userData => {
-    console.log('userData: ', userData);
     user.value = userData;
     if (userData) {
       user.value = {
