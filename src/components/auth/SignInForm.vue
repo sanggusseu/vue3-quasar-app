@@ -75,6 +75,12 @@ const handleSignInGoogle = async () => {
   emit('closeDialog');
 };
 
+// const handleSignInEmail = async () => {
+//   await signInWithEmail(form.value);
+//   $q.notify('이메일 로그인, 환영합니다 :)');
+//   emit('closeDialog');
+// };
+
 const handleSignInEmail = async () => {
   try {
     isLoading.value = true;
