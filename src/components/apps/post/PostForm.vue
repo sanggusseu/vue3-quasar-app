@@ -13,12 +13,8 @@
           <span class="text-grey-7">카테고리를 선택하세요.</span>
         </template>
       </q-select>
-      <q-input
-        v-model="contentModel"
-        type="textarea"
-        outlined
-        placeholder="내용을 작성해주세요"
-      />
+      {{ contentModel }}
+      <TiptapEditor v-model="contentModel" />
       <q-input
         v-model="tagField"
         outlined
@@ -40,6 +36,7 @@
 </template>
 
 <script setup>
+import TiptapEditor from 'src/components/tiptap/TiptapEditor.vue';
 import { getCategories } from 'src/services/category';
 import { computed, ref } from 'vue';
 
