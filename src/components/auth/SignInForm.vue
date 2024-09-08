@@ -10,6 +10,7 @@
         outlined
         dense
       />
+      <DisplayError :code="error?.code" />
       <div>
         <q-btn
           type="submit"
@@ -17,6 +18,7 @@
           class="full-width"
           unelevated
           color="primary"
+          :loading="isLoading"
         />
         <div class="flex justify-between">
           <q-btn
@@ -53,9 +55,14 @@
 <script setup>
 import { useQuasar } from 'quasar';
 import { signInWithGoogle, signInWithEmail } from 'src/services/auth';
+import { getErrorMessage } from 'src/utils/firebase/error-message';
 import { ref } from 'vue';
+import DisplayError from '../DisplayError.vue';
 const emit = defineEmits(['changeView', 'closeDialog']);
 const $q = useQuasar();
+
+const isLoading = ref(false);
+const error = ref('');
 
 const form = ref({
   email: '',
@@ -69,9 +76,20 @@ const handleSignInGoogle = async () => {
 };
 
 const handleSignInEmail = async () => {
-  await signInWithEmail(form.value);
-  $q.notify('이메일 로그인, 환영합니다 :)');
-  emit('closeDialog');
+  try {
+    isLoading.value = true;
+    await signInWithEmail(form.value);
+    $q.notify('이메일 로그인, 환영합니다 :)');
+    emit('closeDialog');
+  } catch (err) {
+    error.value = err;
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.code),
+    });
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 

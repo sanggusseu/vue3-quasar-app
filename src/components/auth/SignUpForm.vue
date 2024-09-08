@@ -77,6 +77,7 @@ const form = ref({
 const passwordConfirm = ref('');
 
 const handleSubmit = async () => {
+  isLoading.value = true;
   await signUpWithEmail(form.value);
   $q.notify('가입을 환영합니다 :)');
   $q.notify('이메일에서 인증 링크를 확인해주세요.');
