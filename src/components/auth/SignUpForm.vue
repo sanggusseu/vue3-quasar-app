@@ -2,12 +2,36 @@
   <div>
     <div class="text-h5 text-center text-weight-bold q-mb-xl">회원가입</div>
     <q-form class="q-gutter-y-md" @submit.prevent="handleSubmit">
-      <q-input v-model="form.nickname" placeholder="닉네임" outlined dense />
-      <q-input v-model="form.email" placeholder="이메일" outlined dense />
       <q-input
+        v-model="form.nickname"
+        placeholder="닉네임"
+        outlined
+        dense
+        :rules="[validateRequired]"
+      />
+      <q-input
+        :rules="[validateRequired, validateEmail]"
+        v-model="form.email"
+        placeholder="이메일"
+        outlined
+        dense
+      />
+      <q-input
+        :rules="[validateRequired, validatePassword]"
         v-model="form.password"
         type="password"
         placeholder="비밀번호(문자, 숫자조합 8자 이상)"
+        outlined
+        dense
+      />
+      <q-input
+        :rules="[
+          validateRequired,
+          val => validatePasswordConfirm(form.password, val),
+        ]"
+        v-model="passwordConfirm"
+        type="password"
+        placeholder="비밀번호 확인"
         outlined
         dense
       />
@@ -34,6 +58,12 @@
 import { ref } from 'vue';
 import { signUpWithEmail } from 'src/services';
 import { useQuasar } from 'quasar';
+import {
+  validateRequired,
+  validateEmail,
+  validatePassword,
+  validatePasswordConfirm,
+} from 'src/utils/validate-rules';
 
 const emit = defineEmits(['changeView', 'closeDialog']);
 
@@ -44,6 +74,7 @@ const form = ref({
   email: '',
   password: '',
 });
+const passwordConfirm = ref('');
 
 const handleSubmit = async () => {
   await signUpWithEmail(form.value);
