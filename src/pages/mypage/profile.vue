@@ -9,11 +9,17 @@
         <q-separator />
         <q-card-actions>
           <q-space />
-          <q-btn type="submit" label="저장하기" flat color="primary" />
+          <q-btn
+            type="submit"
+            label="저장하기"
+            flat
+            color="primary"
+            :loading="isLoading"
+          />
         </q-card-actions>
       </q-form>
     </BaseCard>
-    <BaseCard>
+    <!-- <BaseCard>
       <q-form @submit.prevent="handleSubmitEmail">
         <q-card-section class="q-gutter-y-md">
           <div class="text-h6">이메일 변경</div>
@@ -25,35 +31,51 @@
           <q-btn type="submit" label="저장하기" flat color="primary" />
         </q-card-actions>
       </q-form>
-    </BaseCard>
+    </BaseCard> -->
   </div>
 </template>
 
 <script setup>
 import BaseCard from 'src/components/base/BaseCard.vue';
 import { ref, watchEffect } from 'vue';
-import { updateUserProfile, updateUserEmail } from 'src/services';
+import { updateUserProfile } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 import { useQuasar } from 'quasar';
+import { useAsyncState } from '@vueuse/core';
+import { getErrorMessage } from 'src/utils/firebase/error-message';
 
 const authStore = useAuthStore();
 const $q = useQuasar();
 
-const displayName = ref('');
-const handleSubmitProfile = async () => {
-  await updateUserProfile(displayName.value);
-  $q.notify('프로필 수정 완료!');
-};
+const { isLoading, execute } = useAsyncState(updateUserProfile, null, {
+  immediate: false,
+  onSuccess: () => {
+    $q.notify('프로필 수정 완료!');
+  },
+  onError: err => {
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.code),
+    });
+  },
+});
 
-const email = ref('');
-const handleSubmitEmail = async () => {
-  await updateUserEmail(email.value);
-  $q.notify('이메일 수정 완료!');
-};
+const displayName = ref('');
+const handleSubmitProfile = () => execute(0, displayName.value);
+// const handleSubmitProfile = async () => {
+//   await updateUserProfile(displayName.value);
+//   $q.notify('프로필 수정 완료!');
+// };
+
+// const email = ref('');
+// const handleSubmitEmail = async () => {
+//   await updateUserEmail(email.value);
+//   $q.notify('이메일 수정 완료!');
+// };
 
 watchEffect(() => {
   displayName.value = authStore.user?.displayName;
-  email.value = authStore.user?.email;
+  // email.value = authStore.user?.email;
 });
 </script>
 

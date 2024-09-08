@@ -58,16 +58,12 @@ import { signInWithGoogle, signInWithEmail } from 'src/services/auth';
 import { getErrorMessage } from 'src/utils/firebase/error-message';
 import { ref } from 'vue';
 import DisplayError from '../DisplayError.vue';
+import { useAsyncState } from '@vueuse/core';
 const emit = defineEmits(['changeView', 'closeDialog']);
 const $q = useQuasar();
 
-const isLoading = ref(false);
-const error = ref('');
-
-const form = ref({
-  email: '',
-  password: '',
-});
+// const isLoading = ref(false);
+// const error = ref('');
 
 const handleSignInGoogle = async () => {
   await signInWithGoogle();
@@ -81,22 +77,43 @@ const handleSignInGoogle = async () => {
 //   emit('closeDialog');
 // };
 
-const handleSignInEmail = async () => {
-  try {
-    isLoading.value = true;
-    await signInWithEmail(form.value);
+const { isLoading, error, execute } = useAsyncState(signInWithEmail, null, {
+  immediate: false,
+  throwError: true,
+  onSuccess: () => {
     $q.notify('이메일 로그인, 환영합니다 :)');
     emit('closeDialog');
-  } catch (err) {
-    error.value = err;
+  },
+  onError: err => {
     $q.notify({
       type: 'negative',
       message: getErrorMessage(err.code),
     });
-  } finally {
-    isLoading.value = false;
-  }
-};
+  },
+});
+
+// 이메일 로그인
+const form = ref({
+  email: '',
+  password: '',
+});
+const handleSignInEmail = () => execute(1000, form.value);
+// const handleSignInEmail = async () => {
+//   try {
+//     isLoading.value = true;
+//     await signInWithEmail(form.value);
+//     $q.notify('이메일 로그인, 환영합니다 :)');
+//     emit('closeDialog');
+//   } catch (err) {
+//     error.value = err;
+//     $q.notify({
+//       type: 'negative',
+//       message: getErrorMessage(err.code),
+//     });
+//   } finally {
+//     isLoading.value = false;
+//   }
+// };
 </script>
 
 <style lang="scss" scoped></style>

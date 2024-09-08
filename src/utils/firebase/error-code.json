@@ -1,5 +1,6 @@
 {
   "auth/invalid-email": "email 사용자 속성에 제공된 값이 잘못되었습니다. 이 값은 문자열 이메일 주소여야 합니다.",
   "auth/missing-password": "비밀번호가 누락되었습니다.",
-  "auth/invalid-credential": "Admin SDK 인증에 사용된 사용자 인증 정보로는 원하는 작업을 수행할 수 없습니다."
+  "auth/invalid-credential": "Admin SDK 인증에 사용된 사용자 인증 정보로는 원하는 작업을 수행할 수 없습니다.",
+  "auth/requires-recent-login": "다시 로그인해주세요"
 }
