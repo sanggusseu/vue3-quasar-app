@@ -26,37 +26,30 @@
             dense
             input-style="font-size: 12px;"
             placeholder="태그로 검색해보세요"
+            @keypress.enter.prevent="addTag"
           />
           <div class="q-gutter-sm q-pb-sm">
             <q-btn
+              v-for="(tag, index) in tags"
+              :key="tag"
               size="10px"
               padding="2px 4px 2px 7px"
               color="grey-3"
               text-color="dark"
               unelevated
+              @click="removeTag(index)"
             >
-              vuejs <q-icon name="clear" size="12px" color="grey" />
-            </q-btn>
-            <q-btn
-              size="10px"
-              padding="2px 4px 2px 7px"
-              color="grey-3"
-              text-color="dark"
-              unelevated
-            >
-              react <q-icon name="clear" size="12px" color="grey" />
+              {{ tag }} <q-icon name="clear" size="12px" color="grey" />
             </q-btn>
           </div>
         </q-card>
       </q-card-section>
       <q-list padding>
-        <q-item v-for="tag in tags" :key="tag.name" clickable dense>
-          <q-item-section class="text-teal text-caption"
-            >#{{ tag.name }}</q-item-section
+        <q-item clickable dense @click="addTag('vuejs')">
+          <q-item-section class="text-teal text-caption">#vuejs</q-item-section>
+          <q-item-section class="text-teal text-caption" side
+            >10</q-item-section
           >
-          <q-item-section class="text-teal text-caption" side>{{
-            tag.count
-          }}</q-item-section>
         </q-item>
       </q-list>
     </q-card>
@@ -65,17 +58,22 @@
 
 <script setup>
 import StickySideBar from 'src/components/StickySideBar.vue';
-import { ref } from 'vue';
+import { useTag } from 'src/composables/useTag';
+import { ref, toRef } from 'vue';
 
-defineEmits(['openWriteDialog']);
+const props = defineProps({
+  tags: {
+    type: Array,
+    default: () => [],
+  },
+});
+const emit = defineEmits(['openWriteDialog']);
 
-const tags = ref([
-  { name: 'vuejs', count: 10 },
-  { name: 'react', count: 8 },
-  { name: 'angular', count: 7 },
-  { name: 'html', count: 1 },
-  { name: 'css', count: 3 },
-]);
+const { addTag, removeTag } = useTag({
+  tags: toRef(props, 'tags'),
+  updateTags: tags => emit('update:tags', tags),
+  maxLengthMessage: '태그는 10개 이상 등록할 수 없습니다.',
+});
 </script>
 
 <style lang="scss" scoped></style>
