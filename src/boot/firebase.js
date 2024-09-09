@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useAuthStore } from 'src/stores/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBmADvAfBBezrxYr7-ex44v6D2aA3uy3zI',
@@ -18,8 +19,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-export { auth };
+export { auth, db };
 
 export default boot(async (/* { app, router, ... } */) => {
   const authStore = useAuthStore();
