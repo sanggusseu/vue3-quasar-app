@@ -19,20 +19,12 @@ import PostHeader from './components/PostHeader.vue';
 import PostRightBar from './components/PostRightBar.vue';
 import { ref } from 'vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
+import { useAsyncState } from '@vueuse/core';
+import { getPosts } from 'src/services';
 
-const posts = Array.from(Array(20), (_, index) => ({
-  id: 'A' + index,
-  title: 'Vue3 Firebase 강의',
-  content:
-    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi molestiae minima accusamus. Et vero repellendus sunt, facere, voluptatum id dignissimos repudiandae quas adipisci provident ipsa iusto qui eum, pariatur nostrum.',
-  readCount: 1,
-  commentCount: 2,
-  likeCount: 3,
-  bookmarkCount: 4,
-  tags: ['html', 'css', 'javascript'],
-  uid: 'uid',
-  category: '카테고리' + index,
-}));
+const { state: posts } = useAsyncState(getPosts, [], {
+  throwError: true,
+});
 
 const postDialog = ref(false);
 const openWriteDialog = () => (postDialog.value = true);
